@@ -28,6 +28,5 @@ exports.get_stockRecording = (type, order_by, direction, page) => {
         LIMIT  ${offset},20`
     }
 
-    console.log(1)
     return global.sql_query(sql_query)
 }
