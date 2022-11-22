@@ -28,6 +28,11 @@ module.exports = {
             status: 500,
             msg: "访问路径不存在",
             data: {}
+        },
+        query_fail: {
+            status: 300,
+            msg: "查询格式非法",
+            data: {}
         }
     },
     pagination: {
