@@ -16,10 +16,13 @@ app.use(morgan("dev"));
 app.use(cors());
 
 const jwtAuth = require("./middleware/jwtAuth")
+
+
+//静态文件挂载
+app.use(express.static('./static'))
+
 //jwt认证中间件
-app.use(jwtAuth);
-
-
+app.use("/api", jwtAuth);
 
 // 挂载路由
 const router = require("./router");
@@ -39,7 +42,7 @@ app.use(notFound());
 
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
 });
