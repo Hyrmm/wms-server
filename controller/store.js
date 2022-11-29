@@ -64,6 +64,7 @@ exports.in_store = async (req, res) => {
     let price = req.body.price
     let amount = req.body.amount
     let updata_date = req.body.updata_date
+    let user_id = req.auth.user_id
     //日期默认处理
     if (updata_date) {
         updata_date = `"${formatDate(new Date(updata_date))}"`
@@ -71,12 +72,13 @@ exports.in_store = async (req, res) => {
         updata_date = "CURRENT_TIMESTAMP()"
     }
     //必填参数验证
-    if (!(stock_id && price && amount)) return res.json(res_data.query_fail)
+    if (!(stock_id && price && amount)) return res.json(res_data.field_fail)
     //修改变动库存
     let sql_result = await store.modify_stock("add", stock_id, amount)
     if (!sql_result) return res.json(res_data.modify_fail)
+
     //生成入库记录
-    let payload = { stock_id, price, amount, updata_date }
+    let payload = { stock_id, price, amount, updata_date, user_id }
     let recording_result = await store.modify_stock_recording("in_stock", payload)
     if (!recording_result) return res.json(res_data.modify_fail)
 
@@ -92,6 +94,7 @@ exports.out_store = async (req, res) => {
     let transport_status = req.body.transport_status
     let transport_order = req.body.transport_order
     let updata_date = req.body.updata_date
+    let user_id = req.auth.user_id
     //日期默认处理
     if (updata_date) {
         updata_date = `"${formatDate(new Date(updata_date))}"`
@@ -99,15 +102,31 @@ exports.out_store = async (req, res) => {
         updata_date = "CURRENT_TIMESTAMP()"
     }
     //必填参数验证
-    if (!(stock_id && price && amount && another_fee && client_name && transport_order && transport_status)) return res.json(res_data.query_fail)
+    if (!(stock_id && price && amount && another_fee && client_name && transport_order && transport_status)) return res.json(res_data.field_fail)
     //修改变动库存
     let sql_result = await store.modify_stock("reduce", stock_id, amount)
     if (!sql_result) return res.json(res_data.modify_fail)
     //生成入库记录
-    let payload = { stock_id, price, amount, updata_date, another_fee, client_name, transport_order, transport_status }
+    let payload = { stock_id, price, amount, updata_date, another_fee, client_name, transport_order, transport_status, user_id }
     let recording_result = await store.modify_stock_recording("out_stock", payload)
     if (!recording_result) return res.json(res_data.modify_fail)
 
     return res.json({ status: 200, msg: "出库成功", data: {} })
 
 }
+
+//新增库存
+
+exports.add_store = async (req, res) => {
+    let name = req.body.name
+    let type = req.body.type
+    let stock = req.body.stock
+
+    //必填参数验证
+    if (!(name && type && stock)) return res.json(res_data.field_fail)
+    let sql_result = await store.add_stock(name, type, stock)
+    //已存在库存冲突
+    if (!sql_result) return res.json(res_data.add_stock_fail)
+    return res.json({ status: 200, msg: "新增库存成功", data: sql_result })
+}
+

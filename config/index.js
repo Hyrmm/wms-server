@@ -7,10 +7,10 @@ module.exports = {
     },
     secretKey: 'hyrm_wms',
     dataBaseConfig: {
-        host: 'localhost',
-        port: "3306",
+        host: 'sh-cynosdbmysql-grp-qbmsgrx2.sql.tencentcdb.com',
+        port: "21051",
         user: 'root',
-        password: 'woshihanjun123',
+        password: 'Woshihanjun123',
         database: 'wms'
     },
     res_data: {
@@ -37,6 +37,16 @@ module.exports = {
         query_fail: {
             status: 300,
             msg: "查询格式非法",
+            data: {}
+        },
+        field_fail: {
+            status: 301,
+            msg: "缺少必填字段",
+            data: {}
+        },
+        add_stock_fail: {
+            status: 302,
+            msg: "已存库存冲突",
             data: {}
         },
         modify_fail: {
