@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunkwms_client"]=self["webpackChunkwms_client"]||[]).push([[271],{6271:function(n,e,u){u.r(e),u.d(e,{default:function(){return f}});var t=function(){var n=this,e=n._self._c;return e("router-view")},l=[],r={},s=r,c=u(1001),i=(0,c.Z)(s,t,l,!1,null,null,null),f=i.exports}}]);
-//# sourceMappingURL=271.aa776074.js.map

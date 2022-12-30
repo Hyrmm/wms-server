@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunkwms_client"]=self["webpackChunkwms_client"]||[]).push([[78],{6078:function(n,u,e){e.r(u),e.d(u,{default:function(){return i}});var l=function(){var n=this,u=n._self._c;return u("h1",[n._v("设置")])},t=[],s={},c=s,r=e(1001),f=(0,r.Z)(c,l,t,!1,null,null,null),i=f.exports}}]);
-//# sourceMappingURL=78.479b8173.js.map
