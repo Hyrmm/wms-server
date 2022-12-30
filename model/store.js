@@ -1,4 +1,4 @@
-const { formatDate } = require("../utils")
+
 
 
 exports.get_stock = (order_by, direction, page, name, is_limit = true) => {
@@ -20,7 +20,7 @@ exports.get_stock = (order_by, direction, page, name, is_limit = true) => {
     ORDER BY ${order_by} ${direction}
     ${limit_sql_query}`)
 }
-exports.get_stockRecording = (type, order_by, direction, page, filter_name, filter_type, filter_date_start, filter_date_end, is_limit = true) => {
+exports.get_stockRecording = (type, order_by, direction, page, filter_name, filter_type, filter_date_start, filter_date_end, filter_transportStatus, filter_clientId, filter_clientName, is_limit = true, is_finishDate = false) => {
     // 分页器偏移量
     let offset = (page - 1) * 20
     let sql_query, filter_sql_query = ""
@@ -32,17 +32,48 @@ exports.get_stockRecording = (type, order_by, direction, page, filter_name, filt
 
 
 
-    //过滤条件筛选
+    //名称、类型过滤处理
     if (filter_name) filter_sql_query += ` AND stocks.name="${filter_name}"`
     if (filter_type) filter_sql_query += ` AND stocks.type="${filter_type}"`
     //时间过滤处理
-    if (filter_date_start && filter_date_end) {
-        filter_sql_query += ` AND updata_date BTWEEN "${filter_date_start}" AND "${filter_date_end}"`
+    let filterDate_key
+    if (is_finishDate) {
+        filterDate_key = "finish_date"
     } else {
-        if (filter_date_start) filter_sql_query += ` AND updata_date >= "${filter_date_start}"`
-        if (filter_date_end) filter_sql_query += ` AND updata_date <= "${filter_date_end}"`
+        filterDate_key = "updata_date"
     }
+
+
+
+
+    if (filter_date_start && filter_date_end) {
+        filter_sql_query += ` AND ${filterDate_key} BETWEEN "${filter_date_start}" AND "${filter_date_end}"`
+    } else {
+        if (filter_date_start) filter_sql_query += ` AND ${filterDate_key} >= "${filter_date_start}"`
+        if (filter_date_end) filter_sql_query += ` AND ${filterDate_key} <= "${filter_date_end}"`
+    }
+
+
+
+    //出库订单状态过滤处理
+    if (type == "out_order" && filter_transportStatus) {
+        filter_sql_query += `AND transport_status = ${filter_transportStatus}`
+    }
+
+    // //客户ID过滤(废弃)
+    // if (type == "out_order" && filter_clientId) {
+    //     filter_sql_query += `AND client_id = ${filter_clientId}`
+    // }
+
+    //客户名模糊过滤
+    if (type == "out_order" && filter_clientName) {
+        filter_sql_query += ` AND client.name LIKE "%${filter_clientName}%"`
+    }
+
+
+
     //查询类型处理
+
     if (type == "in_order") {
         sql_query = `SELECT SQL_CALC_FOUND_ROWS in_order.id,stocks.name,stocks.type,price,amount,updata_date,price*amount AS total_cost,nick
         FROM in_order,stocks,users
@@ -50,9 +81,9 @@ exports.get_stockRecording = (type, order_by, direction, page, filter_name, filt
         ORDER BY ${order_by} ${direction}
         ${limit_sql_query}`
     } else {
-        sql_query = `SELECT SQL_CALC_FOUND_ROWS out_order.id,stocks.name,stocks.type,price,amount,another_fee,client_name AS 'client',status_name AS 'status' ,transport_order,updata_date,nick
-        FROM out_order,stocks,order_status,users
-        WHERE out_order.stock_id = stocks.id AND out_order.transport_status = order_status.id AND out_order.user_id=users.id ${filter_sql_query}
+        sql_query = `SELECT SQL_CALC_FOUND_ROWS out_order.id,stocks.name,stocks.type,stock_id,price,amount,another_fee,client.name AS 'client',client.tel AS client_tel,client.address AS client_address,status_name AS 'status' ,order_status.id AS status_id,transport_order,updata_date,finish_date,nick
+        FROM out_order,stocks,order_status,users,client
+        WHERE client_id = client.id AND out_order.stock_id = stocks.id AND out_order.transport_status = order_status.id AND out_order.user_id=users.id ${filter_sql_query}
         ORDER BY ${order_by} ${direction}
         ${limit_sql_query}`
     }
@@ -108,15 +139,15 @@ exports.modify_stock = async (type, stock_id, amount) => {
     return global.sql_query(modify_sql_query)
 }
 
-//出入库记录
-exports.modify_stock_recording = async (type, payload) => {
+//新增出入库记录
+exports.add_stock_recording = async (type, payload) => {
     //type:出/入库记录 in_stock,out_stock
     //payload:相关字段
     let sql_query
     if (type == "in_stock") sql_query = `INSERT INTO in_order(stock_id,price,amount,updata_date,user_id)
     VALUES(${payload.stock_id},${payload.price},${payload.amount},${payload.updata_date},${payload.user_id})`
-    if (type == "out_stock") sql_query = `INSERT INTO out_order(stock_id,price,amount,another_fee,client_name,transport_status,transport_order,updata_date,user_id)
-    VALUES(${payload.stock_id},${payload.price},${payload.amount},${payload.another_fee},"${payload.client_name}",${payload.transport_status},"${payload.transport_order}",${payload.updata_date},${payload.user_id})`
+    if (type == "out_stock") sql_query = `INSERT INTO out_order(stock_id,price,amount,another_fee,client_id,transport_status,transport_order,updata_date,user_id)
+    VALUES(${payload.stock_id},${payload.price},${payload.amount},${payload.another_fee},${payload.client_id},${payload.transport_status},"${payload.transport_order}",${payload.updata_date},${payload.user_id})`
     return global.sql_query(sql_query)
 
 }
@@ -133,12 +164,33 @@ exports.add_stock = async (name, type, stock) => {
     return global.sql_query(sql_query)
 }
 
+exports.modify_out_store_status = async (id, modify_status) => {
+    let sql_query = `UPDATE out_order 
+    SET transport_status = ${modify_status} 
+    WHERE id='${id}'`
+    return global.sql_query(sql_query)
 
-//user_id => nick
-//外键查询,通过user_id获取最新的nick
-exports.get_nick = async (user_id) => {
-    let sql_query = `SELECT id,nick FROM users
-    WHERE id = ${user_id}`
+}
+
+//验证transport_status合法
+exports.ruled_transport_status = async (transport_status) => {
+    let sql_query = `SELECT id from order_status
+    WHERE id =  ${transport_status}`
     return global.sql_query(sql_query)
 }
 
+
+exports.$get_out_store_recording = async (order_id) => {
+    let sql_query = `SELECT transport_status AS ori_status,stock_id,amount FROM out_order
+    WHERE id = ${order_id}`
+    return global.sql_query(sql_query)
+
+}
+
+//生成订单完成时间
+exports.$set_out_store_finish_date = async (order_id, modify = "CURRENT_TIMESTAMP()") => {
+    let sql_query = `UPDATE out_order
+    SET finish_date = ${modify}
+    WHERE id = ${order_id}`
+    return global.sql_query(sql_query)
+}

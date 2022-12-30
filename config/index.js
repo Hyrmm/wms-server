@@ -41,7 +41,7 @@ module.exports = {
         },
         field_fail: {
             status: 301,
-            msg: "缺少必填字段",
+            msg: "字段验证失败",
             data: {}
         },
         add_stock_fail: {
@@ -49,11 +49,22 @@ module.exports = {
             msg: "已存库存冲突",
             data: {}
         },
-        modify_fail: {
-            status: 600,
-            msg: "变更数据失败",
+        modify_store_fail: {
+            status: 303,
+            msg: "库存变动失败",
+            data: {}
+        },
+        modify_client_fail: {
+            status: 304,
+            msg: "客户不存在",
+            data: {}
+        },
+        add_client_fail: {
+            status: 305,
+            msg: "客户已存在",
             data: {}
         }
+
     },
     pagination: {
         pageSize: 20

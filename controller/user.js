@@ -46,7 +46,6 @@ exports.register = async (req, res, next) => {
 exports.get_userInfo = async (req, res, next) => {
     //Token的payload部分若有所变动,根据数据库最新内容生成新的Token
     let payload = req.auth;
-    console.log(payload)
     let sql_result = await user.get_userInfo(payload.user_id)
     if (sql_result.length && (payload.user_id == sql_result[0].id) && (payload.account == sql_result[0].account) && (payload.nick == sql_result[0].nick) && (payload.role == sql_result[0].role_name)) {
         //用户信息并没有变更,直接返回当前token
