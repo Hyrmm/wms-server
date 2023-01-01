@@ -1,17 +1,23 @@
+/*
+ * @Author: Hyrm 1358188945@qq.com
+ * @Date: 2022-11-02 20:34:03
+ * @LastEditors: Hyrm 1358188945@qq.com
+ * @LastEditTime: 2023-01-01 13:29:50
+ * @FilePath: \wms-server\config\index.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 module.exports = {
     // jwt密钥
-
     jwt_config: {
         secretKey: 'hyrm_wms',
         algorithms: ["HS256"]
     },
-    secretKey: 'hyrm_wms',
     dataBaseConfig: {
-        host: 'sh-cynosdbmysql-grp-qbmsgrx2.sql.tencentcdb.com',
-        port: "21051",
-        user: 'root',
-        password: 'Woshihanjun123',
-        database: 'wms'
+        host: '数据库地址',
+        port: "端口",
+        user: '用户名',
+        password: '密码',
+        database: '数据库名称'
     },
     res_data: {
         auth_fail: {
