@@ -79,5 +79,8 @@ router.use("/dataVisual", require("./dataVisual"));
 module.exports = router;
 ```
 
-> 此项目配合wms-client项目，都会进行长期维护。如有问题请直接在 Issues 中提，或者您发现问题并有非常好的解决方案，欢迎 PR 👍。
+:five:启动项目
 
+npm run dev
+
+> 此项目配合wms-client项目，都会进行长期维护。如有问题请直接在 Issues 中提，或者您发现问题并有非常好的解决方案，欢迎 PR 👍。
