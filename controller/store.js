@@ -105,7 +105,7 @@ exports.out_store = async (req, res) => {
         updata_date = "CURRENT_TIMESTAMP()"
     }
     //必填参数验证
-    if (!(stock_id && price && amount && another_fee && client_id && transport_order && transport_status)) return res.json(res_data.field_fail)
+    if (!(stock_id && price && amount && another_fee && client_id  && transport_status)) return res.json(res_data.field_fail)
     //修改变动库存
     //针对退回仓库订单状态 特殊处理,不去变动库存，maybe只是做记录处理?
     if (transport_order != 4) {

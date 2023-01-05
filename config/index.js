@@ -13,11 +13,11 @@ module.exports = {
         algorithms: ["HS256"]
     },
     dataBaseConfig: {
-        host: '数据库地址',
-        port: "端口",
-        user: '用户名',
-        password: '密码',
-        database: '数据库名称'
+        host: 'sh-cynosdbmysql-grp-qbmsgrx2.sql.tencentcdb.com',
+        port: "21051",
+        user: 'root',
+        password: 'Woshihanjun123',
+        database: 'wms'
     },
     res_data: {
         auth_fail: {
