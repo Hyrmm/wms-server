@@ -163,7 +163,24 @@ exports.add_stock = async (name, type, stock) => {
     VALUES("${name}","${type}",${stock},CURRENT_TIMESTAMP())`
     return global.sql_query(sql_query)
 }
+//编辑库存
+exports.edit_stock = (stock_id, name, type, stock) => {
+    let setQuery = ""
+    if (name) setQuery += `${setQuery ? ',' : ""}name = '${name}'`
+    if (type) setQuery += `${setQuery ? ',' : ""}type = '${type}'`
+    if (stock || stock == 0) setQuery += `${setQuery ? ',' : ""}stock = ${stock}`
+    let sql_query = `UPDATE stocks
+    SET ${setQuery}
+    WHERE id = ${stock_id}`
 
+    return global.sql_query(sql_query)
+}
+//删除库存
+exports.del_stock = (stock_id) => {
+    let sql_query = `DELETE FROM stocks
+    WHERE id = ${stock_id};`
+    return global.sql_query(sql_query)
+}
 exports.modify_out_store_status = async (id, modify_status) => {
     let sql_query = `UPDATE out_order 
     SET transport_status = ${modify_status} 
@@ -178,7 +195,13 @@ exports.ruled_transport_status = async (transport_status) => {
     WHERE id =  ${transport_status}`
     return global.sql_query(sql_query)
 }
+//验证stock_id合法
+exports.ruled_stock_id = (stock_id) => {
+    let sql_query = `SELECT * FROM stocks
+    WHERE id = ${stock_id}`
+    return global.sql_query(sql_query)
 
+}
 
 exports.$get_out_store_recording = async (order_id) => {
     let sql_query = `SELECT transport_status AS ori_status,stock_id,amount FROM out_order

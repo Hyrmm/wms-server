@@ -105,7 +105,7 @@ exports.out_store = async (req, res) => {
         updata_date = "CURRENT_TIMESTAMP()"
     }
     //必填参数验证
-    if (!(stock_id && price && amount && another_fee && client_id  && transport_status)) return res.json(res_data.field_fail)
+    if (!(stock_id && price && amount && another_fee && client_id && transport_status)) return res.json(res_data.field_fail)
     //修改变动库存
     //针对退回仓库订单状态 特殊处理,不去变动库存，maybe只是做记录处理?
     if (transport_order != 4) {
@@ -121,21 +121,6 @@ exports.out_store = async (req, res) => {
     return res.json({ status: 200, msg: "出库成功", data: {} })
 
 }
-
-//新增库存
-exports.add_store = async (req, res) => {
-    let name = req.body.name
-    let type = req.body.type
-    let stock = req.body.stock
-
-    //必填参数验证
-    if (!(name && type && stock)) return res.json(res_data.field_fail)
-    let sql_result = await store.add_stock(name, type, stock)
-    //已存在库存冲突
-    if (!sql_result) return res.json(res_data.add_stock_fail)
-    return res.json({ status: 200, msg: "新增库存成功", data: sql_result })
-}
-
 //更改出库状态
 exports.modify_out_store_status = async (req, res) => {
     let order_id = req.body.order_id
@@ -174,4 +159,52 @@ exports.modify_out_store_status = async (req, res) => {
 
     return res.json({ status: 200, msg: "修改成功", data: {} })
 }
+//新增库存
+exports.add_store = async (req, res) => {
+    let name = req.body.name
+    let type = req.body.type
+    let stock = req.body.stock
+
+    //必填参数验证
+    if (!(name && type && stock != undefined)) return res.json(res_data.field_fail)
+    let sql_result = await store.add_stock(name, type, stock)
+    //已存在库存冲突
+
+    if (!sql_result) return res.json(res_data.add_stock_fail)
+    return res.json({ status: 200, msg: "新增库存成功", data: sql_result })
+}
+//编辑库存
+exports.edit_store = async (req, res) => {
+    let stock_id = req.body.stockId
+    let edit_name = req.body.name
+    let edit_type = req.body.type
+    let edit_stock = req.body.stock
+    //验证必填参数
+    if (!stock_id) return res.json(res_data.field_fail)
+
+    //验证stock_id合法
+    let sql_result = await store.ruled_stock_id(stock_id)
+    if (!sql_result.length) return res.json({ status: 200, msg: "库存不存在", data: sql_result })
+
+    console.log(stock_id, edit_name, edit_type, edit_stock)
+    sql_result = await store.edit_stock(stock_id, edit_name, edit_type, edit_stock)
+    return res.json({ status: 200, msg: "编辑库存成功", data: sql_result })
+}
+//删除库存
+exports.del_store = async (req, res) => {
+    let stock_id = req.body.stockId
+    //验证必填参数
+    if (!stock_id) return res.json(res_data.field_fail)
+    //验证stock_id合法
+    let sql_result = await store.ruled_stock_id(stock_id)
+    if (!sql_result.length) return res.json({ status: 200, msg: "库存不存在", data: sql_result })
+
+    sql_result = await store.del_stock(stock_id)
+
+
+
+    return res.json({ status: 200, msg: "删除成功", data: sql_result })
+}
+
+
 
