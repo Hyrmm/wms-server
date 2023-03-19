@@ -17,7 +17,9 @@ app.use(cors());
 
 const jwtAuth = require("./middleware/jwtAuth")
 
-
+// gzip压缩
+var compression = require('compression');
+app.use(compression());
 //静态文件挂载
 app.use(express.static('./static'))
 
