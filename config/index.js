@@ -17,7 +17,7 @@ module.exports = {
         port: "21051",
         user: 'root',
         password: 'Woshihanjun123',
-        database: 'wms'
+        database: 'wms-fsw'
     },
     res_data: {
         auth_fail: {

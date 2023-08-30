@@ -16,7 +16,7 @@ exports.add_revoked_token = (signature, user_id) => {
     VALUES("${signature}",${user_id})`
     return global.sql_query(sql_query)
 }
-//查询用户信息
+// 查询用户信息
 exports.get_userInfo = (user_id) => {
     let sql_query = `SELECT users.id,account,nick,role_name
     FROM users,roles

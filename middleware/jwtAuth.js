@@ -18,7 +18,6 @@ const jwtAuth = expressjwt({
     getToken: (req) => {
         return req.headers.authorization
     },
-    isRevoked: isRevokedCallback,
 }).unless({ path: ["/api/user/login", "/api/user/register"] });
 
 module.exports = jwtAuth;

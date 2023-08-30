@@ -15,15 +15,8 @@ app.use(express.urlencoded())
 app.use(morgan("dev"));
 app.use(cors());
 
-const jwtAuth = require("./middleware/jwtAuth")
-
-// gzip压缩
-var compression = require('compression');
-app.use(compression());
-//静态文件挂载
-app.use(express.static('./static'))
-
 //jwt认证中间件
+const jwtAuth = require("./middleware/jwtAuth")
 app.use("/api", jwtAuth);
 
 // 挂载路由
@@ -32,7 +25,7 @@ app.use("/api", router)
 
 
 
-// 统一错误处理中间件
+// 统一错误处理中间件aa
 const errorHandler = require("./middleware/error-handler");
 app.use(errorHandler());
 
@@ -44,7 +37,7 @@ app.use(notFound());
 
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
 });

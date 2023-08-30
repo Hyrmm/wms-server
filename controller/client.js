@@ -9,9 +9,10 @@ exports.get_client = async (req, res) => {
 
     let page = req.query.page ? req.query.page : 1
     let filter_name = req.query.filter_name ? req.query.filter_name : ""
+    let filter_client_type = req.query.client_type ? req.query.client_type : 0
     //过滤后总记录数
-    let total_sql_result = await client.get_client(page, filter_name)
-    let sql_result = await client.get_client(page, filter_name, true)
+    let total_sql_result = await client.get_client(page, filter_name, false, filter_client_type)
+    let sql_result = await client.get_client(page, filter_name, true, filter_client_type)
     //标记索引
     sql_result.forEach((element, index) => {
         element.index = (Number(page) - 1) * 20 + index + 1

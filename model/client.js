@@ -1,23 +1,26 @@
-exports.get_client = (page, filter_name, is_limit = false) => {
+exports.get_client = (page, filter_name, is_limit = false, filter_client_type) => {
 
     // 分页器偏移量
     let sql_query
     let offset = (page - 1) * 20
     let limit_sql_query = ""
+    let filter_sql_query = ""
     if (is_limit) limit_sql_query = `LIMIT ${offset},20`
 
-
-    //过滤条件不为空
-    if (filter_name) {
-        sql_query = `SELECT * FROM client
-        WHERE name LIKE "%${filter_name}%"
-        ORDER BY id DESC
-        ${limit_sql_query}`
-    } else {
-        sql_query = `SELECT * FROM client
-        ORDER BY id DESC
-        ${limit_sql_query}`
+    if (filter_client_type) {
+        filter_sql_query += `WHERE type = ${filter_client_type} `
     }
+    if (filter_name) {
+        filter_sql_query += `${filter_sql_query.includes("WHERE") ? "AND" : "WHERE"} name LIKE "%${filter_name}%"`
+    }
+
+
+    sql_query = `SELECT * FROM client
+    ${filter_sql_query}
+    ORDER BY id DESC
+    ${limit_sql_query}
+    `
+
 
 
 
@@ -27,7 +30,7 @@ exports.get_client = (page, filter_name, is_limit = false) => {
 
 
 exports.get_client_options = (max_amount = 1000) => {
-    let sql_query = `SELECT id,name AS 'value' FROM client
+    let sql_query = `SELECT id,type,name AS 'value' FROM client
     ORDER BY id DESC
     LIMIT 0,${1000}`
     return global.sql_query(sql_query)
