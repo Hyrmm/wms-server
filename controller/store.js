@@ -415,6 +415,7 @@ exports.edit_material_store = async (req, res) => {
     let edit_type = req.body.type
     let edit_stock = req.body.stock
     let edit_price = req.body.price
+    let edit_des = req.body.des
     //验证必填参数
     if (!stock_id) return res.json(res_data.field_fail)
 
@@ -422,7 +423,7 @@ exports.edit_material_store = async (req, res) => {
     let sql_result = await store.ruled_material_stock_id(stock_id)
     if (!sql_result.length) return res.json({ status: 200, msg: "库存不存在", data: sql_result })
 
-    sql_result = await store.edit_material_stock(stock_id, edit_name, edit_type, edit_stock, edit_price)
+    sql_result = await store.edit_material_stock(stock_id, edit_name, edit_type, edit_stock, edit_price, edit_des)
     return res.json({ status: 200, msg: "编辑库存成功", data: sql_result })
 }
 //编辑成品库存
@@ -431,6 +432,7 @@ exports.edit_product_store = async (req, res) => {
     let edit_name = req.body.name
     let edit_type = req.body.type
     let edit_stock = req.body.stock
+    let edit_des = req.body.des
     //验证必填参数
     if (!stock_id) return res.json(res_data.field_fail)
 

@@ -331,12 +331,13 @@ exports.add_product_stock = async (name, type, stock, materialRecipe) => {
 
 }
 //编辑材料库存
-exports.edit_material_stock = (stock_id, name, type, stock, price) => {
+exports.edit_material_stock = (stock_id, name, type, stock, price, des) => {
     let setQuery = ""
     if (name) setQuery += `${setQuery ? ',' : ""}name = '${name}'`
     if (type) setQuery += `${setQuery ? ',' : ""}type = '${type}'`
     if (stock || stock == 0) setQuery += `${setQuery ? ',' : ""}stock = ${stock}`
     if (price) setQuery += `${setQuery ? ',' : ""}price = ${price}`
+    if (des) setQuery += `${setQuery ? ',' : ""}des = '${des}'`
     let sql_query = `UPDATE materialStock
     SET ${setQuery}
     WHERE id = ${stock_id}`
@@ -345,11 +346,12 @@ exports.edit_material_stock = (stock_id, name, type, stock, price) => {
 }
 
 //编辑成品库存
-exports.edit_product_stock = (stock_id, name, type, stock) => {
+exports.edit_product_stock = (stock_id, name, type, stock, des) => {
     let setQuery = ""
     if (name) setQuery += `${setQuery ? ',' : ""}name = '${name}'`
     if (type) setQuery += `${setQuery ? ',' : ""}type = '${type}'`
     if (stock || stock == 0) setQuery += `${setQuery ? ',' : ""}stock = ${stock}`
+    if (des) setQuery += `${setQuery ? ',' : ""}des = '${des}'`
     let sql_query = `UPDATE productStock
     SET ${setQuery}
     WHERE id = ${stock_id}`
