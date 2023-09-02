@@ -2,6 +2,7 @@
 const { store } = require("../model")
 const { res_data } = require("../config")
 const { formatDate } = require("../utils")
+const { pinyin } = require("pinyin-pro")
 exports.get_stock = async (req, res) => {
     // 拦截未传或为空的参数
     let order_by = req.query.order_by ? req.query.order_by : "id"
@@ -12,7 +13,17 @@ exports.get_stock = async (req, res) => {
     // 过滤后总记录数
     let total_sql_result = await store.get_stock(order_by, direction, page, name, false, type)
     // 分页结果
-    let sql_result = await store.get_stock(order_by, direction, page, name, true, type)
+    let sql_result = await store.get_stock(order_by, direction, page, name, false, type)
+
+    // 首字母排序
+    sql_result = sql_result.sort((pre, next) => {
+        const prePY = pinyin(pre.name[0], { toneType: 'none' })[0].toLocaleLowerCase()
+        const nextPY = pinyin(next.name[0], { toneType: 'none' })[0].toLocaleLowerCase()
+        return prePY.charCodeAt() - nextPY.charCodeAt()
+    })
+    // 分页
+    sql_result = sql_result.slice((page - 1) * 20, (page - 1) * 20 + 20)
+
     //标记索引
     sql_result.forEach((element, index) => {
         element.index = (Number(page) - 1) * 20 + index + 1
