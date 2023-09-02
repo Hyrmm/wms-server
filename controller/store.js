@@ -38,6 +38,42 @@ exports.get_stock = async (req, res) => {
 
     return res.json({ status: 200, msg: "查询成功", current_page: Number(page), total: total_sql_result.length, data: sql_result })
 }
+exports.get_all_stock = async (req, res) => {
+    // 拦截未传或为空的参数
+    let order_by = req.query.order_by ? req.query.order_by : "id"
+    let direction = req.query.direction ? req.query.direction : "ASC"
+    let page = req.query.page ? Number(req.query.page) : 1
+    let name = req.query.name ? req.query.name : ""
+    let type = req.query.type ? req.query.type : ""
+    // 过滤后总记录数
+    let total_sql_result = await store.get_stock(order_by, direction, page, name, false, type)
+    // 分页结果
+    let sql_result = await store.get_stock(order_by, direction, page, name, false, type)
+    //标记索引
+    sql_result.forEach((element, index) => {
+        element.index = (Number(page) - 1) * 20 + index + 1
+    });
+
+    // 针对成品库存计算价格
+    if (type == 2) {
+
+        for (const record of sql_result) {
+            let price = 0
+            const recipes = JSON.parse(record.materialRecipe)
+            for (const recipe of recipes) {
+                const recipeAmount = recipe.amount
+                const recipePrice = await store.$get_curMaterialPrice(recipe.stockId)
+                price += recipeAmount * recipePrice
+            }
+            record.price = price
+        }
+
+    }
+
+
+
+    return res.json({ status: 200, msg: "查询成功", current_page: Number(page), total: total_sql_result.length, data: sql_result })
+}
 
 
 //查询原料出入库记录
