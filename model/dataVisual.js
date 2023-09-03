@@ -10,8 +10,19 @@
 
 
 
-exports.get_total_stock = () => {
-    let sql_query = `SELECT COUNT(*) AS total FROM stocks`
+exports.get_total_stock = (type) => {
+    let stockName
+    switch (type) {
+        case 1: {
+            stockName = "materialStock"
+            break
+        }
+        case 2: {
+            stockName = "productStock"
+            break
+        }
+    }
+    let sql_query = `SELECT COUNT(*) AS total FROM ${stockName}`
     return global.sql_query(sql_query)
 }
 exports.get_total_client = () => {
@@ -19,12 +30,37 @@ exports.get_total_client = () => {
     return global.sql_query(sql_query)
 }
 
-exports.get_total_inOrder = () => {
-    let sql_query = `SELECT COUNT(*) AS total FROM in_order`
+exports.get_total_inOrder = (type) => {
+
+    let tableName
+    switch (type) {
+        case 1: {
+            tableName = "materialRecordIn"
+            break
+        }
+        case 2: {
+            tableName = "productRecordIn"
+            break
+        }
+    }
+
+    let sql_query = `SELECT COUNT(*) AS total FROM ${tableName}`
     return global.sql_query(sql_query)
 }
-exports.get_total_outOrder = () => {
-    let sql_query = `SELECT COUNT(*) AS total FROM out_order`
+exports.get_total_outOrder = (type) => {
+    let tableName
+    switch (type) {
+        case 1: {
+            tableName = "materialRecordOut"
+            break
+        }
+        case 2: {
+            tableName = "productRecordOut"
+            break
+        }
+    }
+
+    let sql_query = `SELECT COUNT(*) AS total FROM ${tableName}`
     return global.sql_query(sql_query)
 }
 //获取不同状态订单
