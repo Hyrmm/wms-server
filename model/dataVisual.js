@@ -82,8 +82,19 @@ exports.get_order_count = (status) => {
 }
 
 
-exports.get_store = () => {
-    let sql_query = `SELECT * FROM stocks`
+exports.get_store = (type) => {
+    let tableName
+    switch (type) {
+        case 1: {
+            tableName = "materialRecordOut"
+            break
+        }
+        case 2: {
+            tableName = "productRecordOut"
+            break
+        }
+    }
+    let sql_query = `SELECT * FROM ${tableName}`
     return global.sql_query(sql_query)
 }
 exports.get_date_order = (year, month) => {
