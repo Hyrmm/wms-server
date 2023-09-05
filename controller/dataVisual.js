@@ -114,7 +114,7 @@ exports.get_salesInfo = async (req, res) => {
             chartsData.costData[new Date(item.updata_date).getDate() - 1] += cost * item.amount
 
             //利润
-            chartsData.profitData[new Date(item.updata_date).getDate() - 1] = + item.price - cost * item.amount
+            chartsData.profitData[new Date(item.updata_date).getDate() - 1] += item.price - cost * item.amount
 
             //销售额排名客户
             if (clientRank[item.client]) {
@@ -167,7 +167,7 @@ exports.get_salesInfo = async (req, res) => {
             chartsData.costData[new Date(item.updata_date).getMonth()] += cost * item.amount
 
             //利润
-            chartsData.profitData[new Date(item.updata_date).getMonth()] = + item.price - cost * item.amount
+            chartsData.profitData[new Date(item.updata_date).getMonth()] += item.price - cost * item.amount
 
             //销售额排名客户
             if (clientRank[item.client]) {
