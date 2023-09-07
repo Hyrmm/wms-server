@@ -453,7 +453,12 @@ exports.$get_curMaterialPrice = async (stock_id) => {
     let sql_query = `SELECT price FROM materialStock
     WHERE id = ${stock_id}`
     let sql_result = await global.sql_query(sql_query)
-    return sql_result[0].price
+	if(sql_result[0]){
+		return sql_result[0].price
+	}else{
+		return 0
+	}
+
 }
 //设置当前材料平均成本
 exports.$set_curMaterialPrice = async (stock_id, price) => {
