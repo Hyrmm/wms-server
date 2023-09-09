@@ -86,11 +86,11 @@ exports.get_store = (type) => {
     let tableName
     switch (type) {
         case 1: {
-            tableName = "materialRecordOut"
+            tableName = "materialStock"
             break
         }
         case 2: {
-            tableName = "productRecordOut"
+            tableName = "productStock"
             break
         }
     }

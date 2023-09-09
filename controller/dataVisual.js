@@ -55,24 +55,43 @@ exports.get_common_info = async (req, res) => {
 }
 
 exports.get_storeInfo = async (req, res) => {
-    let sql_result = await dataVisual.get_store(1)
-    let cache = {}
-    let options = []
-    for (let item of sql_result) {
-        if (cache[item.name]) {
+    let material_sql_result = await dataVisual.get_store(1)
+    let product_sql_result = await dataVisual.get_store(2)
+    let materialCache = {}
+    let productCache = {}
+    let materialOptions = []
+    let productOptions = []
+    for (let item of material_sql_result) {
+        if (materialCache[item.name]) {
             //有缓存
-            let index = cache[item.name].index
-            options[index].children.push({ name: item.type, value: item.stock })
-            options[index].value += item.stock
+            let index = materialCache[item.name].index
+            materialOptions[index].children.push({ name: item.type, value: item.stock })
+            materialOptions[index].value += item.stock
 
         } else {
             //首次推入数据以及记录位置
-            let index = options.push({ name: item.name, value: item.stock, children: [{ name: item.type, value: item.stock }] }) - 1
+            let index = materialOptions.push({ name: item.name, value: item.stock, children: [{ name: item.type, value: item.stock }] }) - 1
             //记录缓存
-            cache[item.name] = { name: item.name, index: index }
+            materialCache[item.name] = { name: item.name, index: index }
         }
     }
-    return res.json({ status: 200, msg: "获取成功", data: options })
+
+    for (let item of product_sql_result) {
+        if (productCache[item.name]) {
+            //有缓存
+            let index = productCache[item.name].index
+            productOptions[index].children.push({ name: item.type, value: item.stock })
+            productOptions[index].value += item.stock
+
+        } else {
+            //首次推入数据以及记录位置
+            let index = productOptions.push({ name: item.name, value: item.stock, children: [{ name: item.type, value: item.stock }] }) - 1
+            //记录缓存
+            productCache[item.name] = { name: item.name, index: index }
+        }
+    }
+
+    return res.json({ status: 200, msg: "获取成功", data: { materialOptions, productOptions } })
 }
 exports.get_salesInfo = async (req, res) => {
     let year = req.query.year

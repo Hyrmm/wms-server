@@ -277,7 +277,7 @@ exports.in_store_product = async (req, res) => {
         // 减少原料库存
         let sql_result = await store.modify_stock_material('reduce', recipe.stockId, recipe.amount * amount)
         // 生成原料出库记录
-        const payload = { stock_id: recipe.stockId, amount, updata_date, user_id, client_id: 1, out_type: 2 }
+        const payload = { stock_id: recipe.stockId, amount: amount * recipe.amount, updata_date, user_id, client_id: 1, out_type: 2 }
         sql_result = await store.add_stock_recording_material('out_stock', payload)
 
     }
