@@ -235,6 +235,11 @@ exports.get_salesInfo = async (req, res) => {
         categoriesPer.totalSales += item.sales.value
         categoriesPer.totalCost += item.cost.value
         categoriesPer.totalProfit += item.profit.value
+
+        item.sales.value = item.sales.value.toFixed(2)
+        item.cost.value = item.cost.value.toFixed(2)
+        item.profit.value = item.profit.value.toFixed(2)
+
         categoriesPer.sales.push(item.sales)
         categoriesPer.cost.push(item.cost)
         categoriesPer.profit.push(item.profit)
@@ -255,6 +260,13 @@ exports.get_salesInfo = async (req, res) => {
                 newClientRank[j] = temp;
             }
         }
+    }
+
+    //保留小数处理
+    for (let i = 0; i < chartsData.xData.length; i++) {
+        chartsData.salesData[i] = chartsData.salesData[i] ? chartsData.salesData[i].toFixed(2) : chartsData.salesData[i]
+        chartsData.costData[i] = chartsData.costData[i] ? chartsData.costData[i].toFixed(2) : chartsData.costData[i]
+        chartsData.profitData[i] = chartsData.profitData[i] ? chartsData.profitData[i].toFixed(2) : chartsData.profitData[i]
     }
 
 
