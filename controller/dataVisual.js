@@ -200,7 +200,7 @@ exports.get_salesInfo = async (req, res) => {
                 //有缓存
                 let index = categoriesPerCache[item.stock_id]
                 categoriesPerTemp[index].sales.value += item.price
-                categoriesPerTemp[index].cost.value += cost * amount
+                categoriesPerTemp[index].cost.value += cost * item.amount
                 categoriesPerTemp[index].profit.value += item.price - cost * item.amount
 
             } else {
