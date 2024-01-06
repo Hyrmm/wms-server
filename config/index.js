@@ -15,8 +15,8 @@ module.exports = {
     dataBaseConfig: {
         host: 'sh-cynosdbmysql-grp-qbmsgrx2.sql.tencentcdb.com',
         port: "21051",
-        user: 'root',
-        password: 'Woshihanjun123',
+        user: 'wms',
+        password: 'Wms12345678',
         database: 'wms'
     },
     res_data: {
