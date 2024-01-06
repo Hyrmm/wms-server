@@ -1,7 +1,7 @@
 
 
 
-exports.get_stock = (order_by, direction, page, name, is_limit = true, type) => {
+exports.get_stock = (order_by, direction, page, name, is_limit = true, type, nullStock) => {
     let offset = (page - 1) * 20
 
     let tableName
@@ -24,6 +24,11 @@ exports.get_stock = (order_by, direction, page, name, is_limit = true, type) => 
     let filter_sql_query = ""
     if (name) filter_sql_query = `WHERE name = "${name}"`
 
+    if (filter_sql_query) {
+        filter_sql_query += ` AND stock ${nullStock ? "> 0" : ">= 0"}`
+    } else {
+        filter_sql_query += `WHERE stock ${nullStock ? "> 0" : ">= 0"}`
+    }
 
 
 
@@ -453,11 +458,11 @@ exports.$get_curMaterialPrice = async (stock_id) => {
     let sql_query = `SELECT price FROM materialStock
     WHERE id = ${stock_id}`
     let sql_result = await global.sql_query(sql_query)
-	if(sql_result[0]){
-		return sql_result[0].price
-	}else{
-		return 0
-	}
+    if (sql_result[0]) {
+        return sql_result[0].price
+    } else {
+        return 0
+    }
 
 }
 //设置当前材料平均成本
