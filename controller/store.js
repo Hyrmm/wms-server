@@ -10,7 +10,7 @@ exports.get_stock = async (req, res) => {
     let page = req.query.page ? Number(req.query.page) : 1
     let name = req.query.name ? req.query.name : ""
     let type = req.query.type ? req.query.type : ""
-    let nullStock = req.query.nullStock ? req.query.nullStock : true
+    let nullStock = req.query.nullStock == "true" ? true : false
     // 过滤后总记录数
     let total_sql_result = await store.get_stock(order_by, direction, page, name, false, type, nullStock)
     // 分页结果
