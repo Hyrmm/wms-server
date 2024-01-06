@@ -37,9 +37,10 @@ exports.get_stock = async (req, res) => {
             let price = 0
             const recipes = JSON.parse(record.materialRecipe)
             for (const recipe of recipes) {
-                const recipeAmount = recipe.amount
+                const recipeAmount = Number(recipe.amount)
                 const recipePrice = await store.$get_curMaterialPrice(recipe.stockId)
-                price += recipeAmount * recipePrice
+                const curPrice = Number((recipeAmount * recipePrice).toFixed(2))
+                price = (curPrice + price)
             }
             record.price = price
         }
@@ -73,9 +74,10 @@ exports.get_all_stock = async (req, res) => {
             let price = 0
             const recipes = JSON.parse(record.materialRecipe)
             for (const recipe of recipes) {
-                const recipeAmount = recipe.amount
+                const recipeAmount = Number(recipe.amount)
                 const recipePrice = await store.$get_curMaterialPrice(recipe.stockId)
-                price += recipeAmount * recipePrice
+                const curPrice = Number((recipeAmount * recipePrice).toFixed(2))
+                price = curPrice + price
             }
             record.price = price
         }
